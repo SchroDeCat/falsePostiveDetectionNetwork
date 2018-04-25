@@ -1,6 +1,6 @@
 %% Preprocessing
 clear;
-imsize = 100;
+imsize = 80;
 %读取训练集和测试集
 digitDatasetPath = 'E:\中山大学\大三\LAB\Breast Cancer\2017-2018春季学期\falsePositiveDetection\CancerDetectionImgs\CancerDetectionImgs';
 digitData = imageDatastore(digitDatasetPath, ...
@@ -8,9 +8,21 @@ digitData = imageDatastore(digitDatasetPath, ...
 [trainDigitData,testDigitData] = splitEachLabel(digitData,0.8,'randomize');
 
 %% define network
-%网络层次设置
+% % 获取matlab自己训练好的网络
+% net = resnet50();
+% % 改变输出层的类别个数
+% layersTransfer = net.Layers(1:end-3);
+% % 显示新的类别个数
+% numClasses =  numel(categories(trainDigitData.Labels));
+% % 把最后三层替换成新的类别
+% layers = [...
+%     layersTransfer
+%     fullyConnectedLayer(numClasses,'WeightLearnRateFactor',20,'BiasLearnRateFactor',20)
+%     softmaxLayer
+%     classificationLayer];
+% %网络层次设置
 layers = [ ...
-    imageInputLayer([imsize imsize 1])
+    imageInputLayer([imsize imsize 3])
     convolution2dLayer(10,10)
     reluLayer
     crossChannelNormalizationLayer(5,'Alpha',0.00005,'Beta',0.75,'K',1)  %Norm layer1        
